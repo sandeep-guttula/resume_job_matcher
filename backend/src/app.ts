@@ -4,6 +4,7 @@ import { json, urlencoded } from 'body-parser';
 import dotenv from 'dotenv';
 import jobRoutes from './routes/job.routes';
 import searchRoutes from './routes/search.routes';
+import resumeRoutes from './routes/resume.routes';
 
 
 dotenv.config();
@@ -18,6 +19,7 @@ app.use(urlencoded({ extended: true }));
 
 app.use('/api/jobs', jobRoutes);
 app.use('/api/search', searchRoutes);
+app.use('/api/resume', resumeRoutes);
 
 app.get('/api/health', (_req: Request, res: Response) => {
     res.status(200).json(
