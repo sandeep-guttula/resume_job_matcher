@@ -1,10 +1,20 @@
 import { Upload } from "lucide-react";
 import { useState, useRef } from 'react';
 import { Button } from "./ui/button";
+import { resumeService } from "../services/api";
+import { useJobStore } from "@/store/jobStore";
+import type { Job } from "@/types";
+
+interface ResumeUploadResponse {
+    predictedRole: string;
+    jobs: Job[];
+}
 
 const ResumeUploadCard = () => {
     const [file, setFile] = useState<File | null>(null);
+    const [loading, setLoading] = useState(false);
     const inputRef = useRef<HTMLInputElement | null>(null);
+    const { setJobs, jobs } = useJobStore();
 
     const handleBoxClick = () => {
         inputRef.current?.click();
@@ -14,6 +24,28 @@ const ResumeUploadCard = () => {
         const selectedFile = e.target.files?.[0];
         if (selectedFile) {
             setFile(selectedFile);
+        }
+    };
+
+    const handleUpload = async () => {
+        if (!file) return;
+        setLoading(true);
+
+        try {
+            console.log("Uploading file:", file.name);
+            const result: ResumeUploadResponse = await resumeService.uploadResume(file);
+            console.log("Upload result:", result);
+
+            if (result?.jobs) {
+                setJobs(result.jobs);
+            }
+        } catch (err) {
+            alert("Failed to upload resume.");
+            console.error("Error uploading resume:", err);
+        } finally {
+            setLoading(false);
+            console.log("Upload complete, current jobs:", jobs);
+            setFile(null);
         }
     };
 
@@ -55,9 +87,10 @@ const ResumeUploadCard = () => {
                     <Button
                         variant="outline"
                         className="w-full"
-                        onClick={handleBoxClick}
+                        onClick={handleUpload}
+                        disabled={!file || loading}
                     >
-                        Upload Resume
+                        {loading ? "Uploading..." : "Upload Resume"}
                     </Button>
                 </div>
             </div>
