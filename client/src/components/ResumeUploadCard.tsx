@@ -52,7 +52,7 @@ const ResumeUploadCard = () => {
     return (
         <div className="rounded-2xl p-10 w-full max-w-5xl mx-auto mt-8 border-gray-600 border-4">
             <h1 className="text-5xl font-bold mb-4 leading-tight">
-                Find Your Dream Job with AI-<br />Powered Matching
+                Find Your Dream Job
             </h1>
 
             <p className="text-lg mb-8">
